@@ -8,7 +8,7 @@ void onNewValue(long newValue) {
   Serial.println(newValue);
 }
 
-RotaryEncoder rotaryEncoder(0, 1000, 200, 3000, onNewValue);
+RotaryEncoder rotaryEncoder(D1, D2, D3, 0, 1000, 200, 3000, onNewValue);
 
 void setup() {
   Serial.begin(115200);

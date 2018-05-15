@@ -1,5 +1,5 @@
-#ifndef HEADER_ROTARYENCODER
-#define HEADER_ROTARYENCODER
+#ifndef HEADER_VALUEDIAL
+#define HEADER_VALUEDIAL
 
 #include "Arduino.h"
 #include <Encoder.h>
@@ -8,7 +8,7 @@
 // open serial monitor and you can observe value increasing clockwise,
 // descreasing counter clockwise and resetting to zero on button push
 
-class RotaryEncoder {
+class ValueDial {
   private:
     Encoder encoder;
     long minTicks;
@@ -25,12 +25,12 @@ class RotaryEncoder {
     long checkBounds(long tickObservation);
     void handleCommit();
 
-    static RotaryEncoder* instance;
+    static ValueDial* instance;
     static void handleKey();
 
   public:
     //
-    RotaryEncoder(
+    ValueDial(
       uint8_t clkPin,
       uint8_t dtPin,
       uint8_t swPin,

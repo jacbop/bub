@@ -1,9 +1,9 @@
-#include "RotaryEncoder.h"
+#include "ValueDial.h"
 #include "Arduino.h"
 
-RotaryEncoder* RotaryEncoder::instance = NULL;
+ValueDial* ValueDial::instance = NULL;
 
-RotaryEncoder::RotaryEncoder(
+ValueDial::ValueDial(
   uint8_t clkPin,
   uint8_t dtPin,
   uint8_t swPin,
@@ -25,15 +25,15 @@ RotaryEncoder::RotaryEncoder(
   onNewValue(onNewValue)
 {
   pinMode(swPin, INPUT_PULLUP);
-  attachInterrupt(swPin, RotaryEncoder::handleKey, RISING);
+  attachInterrupt(swPin, ValueDial::handleKey, RISING);
   instance = this;
 }
 
-void RotaryEncoder::start(void) {
+void ValueDial::start(void) {
   encoder.write(currTicks);
 }
 
-void RotaryEncoder::handleCommit() {
+void ValueDial::handleCommit() {
   needToCommit = false;
   commitDebounceStartTime = millis();
   Serial.print("COMMIT: ");
@@ -41,13 +41,13 @@ void RotaryEncoder::handleCommit() {
   onNewValue(currTicks);
 }
 
-void RotaryEncoder::handleKey() {
+void ValueDial::handleKey() {
   instance->isButtonPressed = true;
   Serial.println("PRESS.");
   instance->handleCommit();
 }
 
-long RotaryEncoder::checkBounds(long tickObservation) {
+long ValueDial::checkBounds(long tickObservation) {
   if (tickObservation < minTicks) {
     encoder.write(minTicks);
     return minTicks;
@@ -59,7 +59,7 @@ long RotaryEncoder::checkBounds(long tickObservation) {
   return tickObservation;
 }
 
-void RotaryEncoder::poll(void) {
+void ValueDial::poll(void) {
   currTicks = checkBounds(encoder.read());
   if (currTicks != prevTicks) {
     prevTicks = currTicks;
