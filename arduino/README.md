@@ -14,3 +14,6 @@ In Arduino preferences
 
 ## Rotary encoder test
 https://www.youtube.com/watch?v=HQuLZHsGZdI
+
+## OLED test
+https://github.com/acrobotic/Ai_Ardulib_SSD1306

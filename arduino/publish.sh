@@ -1,1 +1,1 @@
-tar cvf - Setpoint | (cd ~/Documents/Arduino/libraries; tar xvf -)
+tar cvf - Setpoint Display | (cd ~/Documents/Arduino/libraries; tar xvf -)
