@@ -16,7 +16,7 @@ void onValue(double value) {
   display.setValue(value);
 }
 
-Setpoint setpoint(D3, D4, D5, 10.0, 80.0, 22.0, 3000, onSetpoint, onValue);
+Setpoint setpoint(D5, D6, D7, 10.0, 80.0, 22.0, 3000, onSetpoint, onValue);
 
 void setup() {
   Serial.begin(115200);

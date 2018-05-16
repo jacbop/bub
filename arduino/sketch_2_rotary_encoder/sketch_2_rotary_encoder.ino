@@ -13,7 +13,7 @@ void onValue(double value) {
   Serial.println(value);
 }
 
-Setpoint setpoint(D1, D2, D3, 10.0, 80.0, 22.0, 3000, onSetpoint, onValue);
+Setpoint setpoint(D5, D6, D7, 10.0, 80.0, 22.0, 3000, onSetpoint, onValue);
 
 void setup() {
   Serial.begin(115200);
