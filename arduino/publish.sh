@@ -1,1 +1,1 @@
-tar cvf - ValueDial | (cd ~/Documents/Arduino/libraries; tar xvf -)
+tar cvf - Setpoint | (cd ~/Documents/Arduino/libraries; tar xvf -)

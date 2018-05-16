@@ -1,5 +1,5 @@
-#ifndef HEADER_VALUEDIAL
-#define HEADER_VALUEDIAL
+#ifndef HEADER_SETPOINT
+#define HEADER_SETPOINT
 
 #include "Arduino.h"
 #include <Encoder.h>
@@ -8,39 +8,43 @@
 // open serial monitor and you can observe value increasing clockwise,
 // descreasing counter clockwise and resetting to zero on button push
 
-class ValueDial {
+class Setpoint {
   private:
     Encoder encoder;
     long minTicks;
     long maxTicks;
     long commitDelay;
+    long minValue;
     long currTicks;
     long prevTicks;
     bool isButtonPressed;
     long buttonDebounceStartTime;
     bool needToCommit;
     long commitDebounceStartTime;
-    void (*onNewValue)(long newValue);
+    void (*onSetpoint)(double setpoint);
+    void (*onValue)(double value);
 
     long checkBounds(long tickObservation);
     void handleCommit();
 
-    static ValueDial* instance;
+    static bool debug;
+    static Setpoint* instance;
     static void handleKey();
 
   public:
     //
-    ValueDial(
+    Setpoint(
       uint8_t clkPin,
       uint8_t dtPin,
       uint8_t swPin,
-      long minTicks,
-      long maxTicks,
-      long startTicks,
+      double minValue,
+      double maxValue,
+      double startValue,
       long commitDelay,
-      void (*onNewValue)(long newValue)
+      void (*onSetpoint)(double setpoint),
+      void (*onValue)(double value)
     );
-    void start(void);
+    void start(bool debug);
     void poll(void);
 };
 

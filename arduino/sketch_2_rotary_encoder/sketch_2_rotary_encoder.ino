@@ -1,24 +1,29 @@
 // Basic operation of rotary encoder
 
 
-#include "RotaryEncoder.h"
+#include "Setpoint.h"
 
-void onNewValue(long newValue) {
-  Serial.print("New Value: ");
-  Serial.println(newValue);
+void onSetpoint(double setpoint) {
+  Serial.print("Setpoint: ");
+  Serial.println(setpoint);
 }
 
-RotaryEncoder rotaryEncoder(D1, D2, D3, 0, 1000, 200, 3000, onNewValue);
+void onValue(double value) {
+  Serial.print("Value: ");
+  Serial.println(value);
+}
+
+Setpoint setpoint(D1, D2, D3, 10.0, 80.0, 22.0, 3000, onSetpoint, onValue);
 
 void setup() {
   Serial.begin(115200);
   Serial.println("Basic Encoder Test:");
-  rotaryEncoder.start();
+  setpoint.start(false);
 }
 
 
 void loop() {
-  rotaryEncoder.poll();
+  setpoint.poll();
 }
 
 
