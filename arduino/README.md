@@ -17,3 +17,10 @@ https://www.youtube.com/watch?v=HQuLZHsGZdI
 
 ## OLED test
 https://github.com/acrobotic/Ai_Ardulib_SSD1306
+
+Thingspeak for data collections channels
+temp (in)
+temp (out)
+time
+heat
+cool
