@@ -25,6 +25,7 @@ void setup() {
 
 
 void loop() {
-  setpoint.poll();
+  long now = millis();
+  setpoint.poll(now);
 }
 

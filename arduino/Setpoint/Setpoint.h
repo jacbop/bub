@@ -45,7 +45,7 @@ class Setpoint {
       void (*onValue)(double value)
     );
     void start(bool debug);
-    void poll(void);
+    void poll(long millis);
 };
 
 #endif

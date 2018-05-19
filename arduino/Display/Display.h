@@ -9,6 +9,12 @@
 
 class Display {
   private:
+   double lastValue;
+   double lastTemperature;
+   bool lastCool;
+   bool lastHeat;
+   String lastBanner;
+   void refresh();
   
   public:
     //
@@ -17,6 +23,9 @@ class Display {
     void setSetpoint(double value);
     void setValue(double value);
     void setTemperature(double value);
+    void setCool(bool isCalling);
+    void setHeat(bool isCalling);
+    void setFooter();
 };
 
 #endif

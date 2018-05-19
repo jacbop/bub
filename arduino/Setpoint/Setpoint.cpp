@@ -37,6 +37,8 @@ Setpoint::Setpoint(
 void Setpoint::start(bool debug) {
   this->debug = debug;
   encoder.write(currTicks);
+  onValue((currTicks / TICK_RESOLUTION) + minValue);
+  onSetpoint((currTicks / TICK_RESOLUTION) + minValue);
 }
 
 void Setpoint::handleCommit() {
@@ -71,11 +73,11 @@ long Setpoint::checkBounds(long tickObservation) {
   return tickObservation;
 }
 
-void Setpoint::poll(void) {
+void Setpoint::poll(long millis) {
   currTicks = checkBounds(encoder.read());
   if (currTicks != prevTicks) {
     prevTicks = currTicks;
-    commitDebounceStartTime = millis();
+    commitDebounceStartTime = millis;
     needToCommit = true;
     if (debug) {
       Serial.print("==> ");
@@ -85,13 +87,13 @@ void Setpoint::poll(void) {
     }
     onValue((currTicks / TICK_RESOLUTION) + minValue);
   }
-  if (needToCommit && ((millis() - commitDebounceStartTime) > 3000)) {
+  if (needToCommit && ((millis - commitDebounceStartTime) > 3000)) {
     handleCommit();
     needToCommit = false;
-    commitDebounceStartTime = millis();
+    commitDebounceStartTime = millis;
   }
-  if (isButtonPressed && ((millis() - buttonDebounceStartTime) > 150)) {
+  if (isButtonPressed && ((millis - buttonDebounceStartTime) > 150)) {
     isButtonPressed = false;
-    buttonDebounceStartTime = millis();
+    buttonDebounceStartTime = millis;
   }
 }

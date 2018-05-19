@@ -10,14 +10,17 @@
 
 class Thermometer {
   private:
+    long lastSample;
+    uint samplePeriod;
     OneWire oneWire;
     DallasTemperature sensors;
+    void printAddress(DeviceAddress deviceAddress);
     void (*onTemperature)(double temperature);
-    
+
   public:
-    Thermometer(uint8_t pin, void (*onTemperature)(double temperature));
+    Thermometer(uint8_t pin, uint samplePeriod, void (*onTemperature)(double temperature));
     void start(bool debug);
-    void poll();
+    void poll(long millis);
 };
 
 #endif

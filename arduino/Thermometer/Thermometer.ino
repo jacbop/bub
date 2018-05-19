@@ -3,23 +3,23 @@
 int sample = 0;
 
 void onTemperature(double temperature) {
-  Serial.print(sample);
+  Serial.print(sample++);
   Serial.print(": temperature: ");
   Serial.print(temperature);
   Serial.println("C");
 }
 
-Thermometer thermometer(D8, onTemperature);
+Thermometer thermometer(D3, 10000, onTemperature);
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println("DS18B20 with OneWire test:");
   thermometer.start(false);
 }
 
 void loop()
 {
-  thermometer.poll();
-  delay(1000);
+  long now = millis();
+  thermometer.poll(now);
 }
