@@ -1,6 +1,6 @@
 #include "Display.h"
 
-Display::Display(): lastValue(20.0), lastTemperature(20.0), lastCool(true), lastHeat(false), lastBanner("  Wilberding   ") {
+Display::Display(double defaultValue): lastValue(defaultValue), lastTemperature(defaultValue), lastCool(false), lastHeat(false), lastBanner("  Wilberding   ") {
 }
 
 void Display::start(bool debug) {
@@ -13,20 +13,24 @@ void Display::start(bool debug) {
 void Display::refresh() {
     oled.setTextXY(0, 0);
   oled.putString(lastBanner);
+  
   String valueText = String(lastValue, 2);
   oled.setTextXY(2, 0);
   oled.putString("SP   = ");
   oled.putString(valueText);
   oled.putString("C");
+  
   String tempText = String(lastTemperature, 2);
   oled.setTextXY(4, 0);
   oled.putString("Temp = ");
   oled.putString(tempText);
   oled.putString("C");
+  
   String coolText = (lastCool) ? String(" (*)") : String("    ");
   oled.setTextXY(6, 0);
   oled.putString("Cool = ");
   oled.putString(coolText);
+  
   String heatText = (lastHeat) ? String(" (*)") : String("    ");
   oled.setTextXY(7, 0);
   oled.putString("Heat = ");
@@ -37,7 +41,6 @@ void Display::setSetpoint(double value) {
   oled.clearDisplay();
   refresh();
 }
-
 
 void Display::setValue(double value) {
   lastValue = value;
@@ -58,15 +61,3 @@ void Display::setHeat(bool isCalling) {
   lastHeat = isCalling;
   refresh();
 }
-
-//   total of 8x16
-//
-//    void setTextXY(unsigned char Row, unsigned char Column);
-//    void clearDisplay();
-//    void setBrightness(unsigned char Brightness);
-//    bool putChar(unsigned char c);
-//    void putString(const char *string);
-//    void putString(String string);
-//    unsigned char putNumber(long n);
-//    unsigned char putFloat(float floatNumber,unsigned char decimal);
-//    unsigned char putFloat(float floatNumber);

@@ -1,7 +1,7 @@
 #include "Controller.h"
 
-Controller::Controller(uint8_t coolPin, uint8_t heatPin, double differential, void (*onCool)(bool isCalling), void (*onHeat)(bool isCalling)):
-  coolPin(coolPin), heatPin(heatPin), isCallingForCool(false), isCallingForHeat(false), setPoint(-1000.0), differential(differential), onCool(onCool), onHeat(onHeat) {
+Controller::Controller(uint8_t coolPin, uint8_t heatPin, double differential, double defaultSetpoint, void (*onCool)(bool isCalling), void (*onHeat)(bool isCalling)):
+  coolPin(coolPin), heatPin(heatPin), isCallingForCool(false), isCallingForHeat(false), differential(differential), setPoint(defaultSetpoint), onCool(onCool), onHeat(onHeat) {
   pinMode(coolPin, OUTPUT);
   pinMode(heatPin, OUTPUT);
 }
@@ -15,15 +15,19 @@ void Controller::setSetpoint(double setPoint) {
 }
 
 bool Controller::shouldCool(double temperature) {
-  // time limit and other params
-  return (setPoint > -1000.0) && (temperature > setPoint + differential);
+  return temperature > (setPoint + differential);
 }
 
 bool Controller::shouldHeat(double temperature) {
-  return (setPoint > -1000.0) && (temperature < setPoint - differential);
+  return temperature < (setPoint - differential);
 }
 
 void Controller::setTemperature(double temperature) {
+  Serial.println(temperature);
+  Serial.println(" sp ");
+  Serial.println(setPoint);
+  Serial.println(" diff ");
+  Serial.println(differential);
   if (shouldCool(temperature)) {
     if (!isCallingForCool) {
       isCallingForCool = true;

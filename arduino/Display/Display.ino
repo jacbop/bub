@@ -1,6 +1,6 @@
 #include "Display.h"
 
-Display display;
+Display display(20.0);
 
 void setup()
 {
@@ -10,14 +10,14 @@ void setup()
 int edge = 0;
 void loop()
 {
-  if (edge == 0 && millis() % 1000 < 10) {
+  if (edge == 0 && millis() % 10000 < 10) {
     edge = 1;
-    display.setValue(millis() % 100);
-    display.setTemperature(millis() % 100);
+    display.setValue(random(10,30));
+    display.setTemperature(random(10,30));
   }
-  if (edge == 1 && millis() % 1000 > 990) {
-    display.setSetpoint(millis() % 100);
-    display.setTemperature(millis() % 100);
+  if (edge == 1 && millis() % 10000 > 9990) {
+    display.setSetpoint(random(10,30));
+    display.setTemperature(random(10,30));
     edge = 0;
   }
 }

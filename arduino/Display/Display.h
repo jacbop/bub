@@ -18,7 +18,7 @@ class Display {
   
   public:
     //
-    Display();
+    Display(double defaultValue);
     void start(bool debug);
     void setSetpoint(double value);
     void setValue(double value);

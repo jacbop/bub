@@ -19,7 +19,7 @@ class Controller {
     bool shouldHeat(double temperature);
 
   public:
-    Controller(uint8_t coolPin, uint8_t heatPin, double differential, void (*onCool)(bool isCalling), void (*onHeat)(bool isCalling));
+    Controller(uint8_t coolPin, uint8_t heatPin, double differential, double defaultSetpoint, void (*onCool)(bool isCalling), void (*onHeat)(bool isCalling));
     void start(bool debug);
     void setSetpoint(double setPoint);
     void setTemperature(double temperature);

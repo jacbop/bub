@@ -2,15 +2,15 @@
 
 void onCool(bool isCalling) {
   Serial.print("cooling: ");
-  Serial.print(isCalling);
+  Serial.println(isCalling);
 }
 
 void onHeat(bool isCalling) {
   Serial.print("heating: ");
-  Serial.print(isCalling);
+  Serial.println(isCalling);
 }
 
-Controller controller(D0, D4, 2.0, onCool, onHeat);
+Controller controller(D0, D4, 2.0, 20.0, onCool, onHeat);
 
 void setup()
 {
@@ -21,14 +21,13 @@ void setup()
 
 void loop()
 {
-  long now = millis();
-  double sp = (now / 100) % 100;
-  double tmp = now % 100;
+  double sp = random(10, 30);
+  double tmp = random(10, 30);
   Serial.print("setpoint: ");
   Serial.print(sp);
   Serial.print(" temp: ");
   Serial.println(tmp);
   controller.setSetpoint(sp);
   controller.setTemperature(tmp);
-  delay(20000);
+  delay(8000);
 }
