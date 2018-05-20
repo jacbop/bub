@@ -6,7 +6,7 @@
 #include "Wifi.h"
 
 Wifi wifi;
-Display display;
+Display display; // D1, D2
 
 void onTemperature(double temperature) {
   display.setTemperature(temperature);
