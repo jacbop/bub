@@ -11,6 +11,7 @@ class Timing {
     long getInstant();
     long elapsedSince(long pastInstant);
     bool hasElapsed(long pastInstant, long duration);
+    bool hadElapsed(long firstInstant, long secondInstant, long duration);
 };
 
 #endif

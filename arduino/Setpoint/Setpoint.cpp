@@ -1,6 +1,9 @@
 #include "Setpoint.h"
+#include "Timing.h"
 
 #define TICK_RESOLUTION 4.0
+
+Timing timing;
 
 Setpoint* Setpoint::instance = NULL;
 bool Setpoint::debug = false;
@@ -43,7 +46,7 @@ void Setpoint::start(bool debug) {
 
 void Setpoint::handleCommit() {
   needToCommit = false;
-  commitDebounceStartTime = millis();
+  commitDebounceStartTime = timing.getInstant();
   if (debug) {
     Serial.print("COMMIT: ");
     Serial.print(currTicks);
@@ -73,11 +76,11 @@ long Setpoint::checkBounds(long tickObservation) {
   return tickObservation;
 }
 
-void Setpoint::poll(long millis) {
+void Setpoint::poll(long recentInstant) {
   currTicks = checkBounds(encoder.read());
   if (currTicks != prevTicks) {
     prevTicks = currTicks;
-    commitDebounceStartTime = millis;
+    commitDebounceStartTime = recentInstant;
     needToCommit = true;
     if (debug) {
       Serial.print("==> ");
@@ -87,13 +90,13 @@ void Setpoint::poll(long millis) {
     }
     onValue((currTicks / TICK_RESOLUTION) + minValue);
   }
-  if (needToCommit && ((millis - commitDebounceStartTime) > 3000)) {
+  if (needToCommit && timing.hadElapsed(commitDebounceStartTime, recentInstant, commitDelay)) {
     handleCommit();
     needToCommit = false;
-    commitDebounceStartTime = millis;
+    commitDebounceStartTime = recentInstant;
   }
-  if (isButtonPressed && ((millis - buttonDebounceStartTime) > 150)) {
+  if (isButtonPressed && timing.hadElapsed(buttonDebounceStartTime, recentInstant, 150)) {
     isButtonPressed = false;
-    buttonDebounceStartTime = millis;
+    buttonDebounceStartTime = recentInstant;
   }
 }

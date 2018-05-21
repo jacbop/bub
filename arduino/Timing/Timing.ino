@@ -14,12 +14,12 @@ void setup()
 
 void loop()
 {
-        Serial.println(millis());
+  Serial.println(millis());
   delay(1000);
   if (timing.hasElapsed(instantJustBeforeRollover, durationLongEnoughForATest)) {
-      Serial.println("Elapsed!");
+    Serial.println("Elapsed!");
   } else {
-      Serial.println("not elapsed yet");
+    Serial.println("not elapsed yet");
   }
 }
 

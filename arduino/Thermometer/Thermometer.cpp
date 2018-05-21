@@ -1,4 +1,7 @@
 #include "Thermometer.h"
+#include "Timing.h"
+
+Timing timing;
 
 Thermometer::Thermometer(uint8_t pin, uint samplePeriod, void (*onTemperature)(double temperature)):
   oneWire(pin), sensors(&oneWire), samplePeriod(samplePeriod), lastSample(0), onTemperature(onTemperature) {
@@ -38,9 +41,9 @@ void Thermometer::start(bool debug) {
   Serial.println();
 }
 
-void Thermometer::poll(long millis) {
-  if (millis > (lastSample + samplePeriod)) {
-    lastSample = millis;
+void Thermometer::poll(long now) {
+  if (timing.hadElapsed(lastSample, now, samplePeriod)) {
+    lastSample = now;
     sensors.requestTemperatures();
     double observation = sensors.getTempCByIndex(0);
     onTemperature(observation);

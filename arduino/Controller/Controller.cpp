@@ -1,10 +1,13 @@
 #include "Controller.h"
+#include "Timing.h"
+
+Timing timing;
 
 Controller::Controller(uint8_t coolPin, uint8_t heatPin, double differential, long compressorDelayTime, double defaultSetpoint, void (*onCool)(bool isCalling), void (*onHeat)(bool isCalling), void (*onWaitingForCompressor)()):
   coolPin(coolPin), heatPin(heatPin), isCallingForCool(false), isCallingForHeat(false), isWaitingForCompressor(false), differential(differential), compressorDelayTime(compressorDelayTime), lastCompressorOffTime(0), setPoint(defaultSetpoint), onCool(onCool), onHeat(onHeat), onWaitingForCompressor(onWaitingForCompressor) {
   pinMode(coolPin, OUTPUT);
   pinMode(heatPin, OUTPUT);
-  lastCompressorOffTime = millis();
+  lastCompressorOffTime = timing.getInstant();
 }
 
 void Controller::start(bool debug) {
@@ -25,23 +28,18 @@ bool Controller::shouldHeat(double temperature) {
 
 bool Controller::relayOn(uint8_t pin) {
   if (pin == coolPin) {
-    if (!isCallingForCool) {
-      if (!isWaitingForCompressor) {
-        Serial.print("waiting for compressor, delay is ");
-        Serial.println((millis() - lastCompressorOffTime + compressorDelayTime) / 1000.0);
-        Serial.println(lastCompressorOffTime);
-        Serial.println(compressorDelayTime);
-        onWaitingForCompressor();
-        isWaitingForCompressor = true;
-      }
-      if (millis() > lastCompressorOffTime + compressorDelayTime) {
-        Serial.println("compressor is ready");
-        Serial.println("cool on");
-        isCallingForCool = true;
-        digitalWrite(coolPin, HIGH);
-        onCool(true);
-        isWaitingForCompressor = false;
-      }
+    if (!isWaitingForCompressor) {
+      Serial.println("waiting for compressor");
+      onWaitingForCompressor();
+      isWaitingForCompressor = true;
+    }
+    if (timing.hasElapsed(lastCompressorOffTime, compressorDelayTime)) {
+      Serial.println("compressor is ready");
+      Serial.println("cool on");
+      isCallingForCool = true;
+      digitalWrite(coolPin, HIGH);
+      onCool(true);
+      isWaitingForCompressor = false;
     }
   }
   if (pin == heatPin) {
@@ -61,7 +59,7 @@ bool Controller::relayOff(uint8_t pin) {
       isCallingForCool = false;
       digitalWrite(coolPin, LOW);
       onCool(false);
-      lastCompressorOffTime = millis();
+      lastCompressorOffTime = timing.getInstant();
     }
   }
   if (pin == heatPin) {

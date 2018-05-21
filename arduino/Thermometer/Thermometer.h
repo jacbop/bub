@@ -20,7 +20,7 @@ class Thermometer {
   public:
     Thermometer(uint8_t pin, uint samplePeriod, void (*onTemperature)(double temperature));
     void start(bool debug);
-    void poll(long millis);
+    void poll(long now);
 };
 
 #endif
