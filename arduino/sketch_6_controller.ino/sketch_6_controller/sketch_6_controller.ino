@@ -22,11 +22,12 @@ uint8_t pin_encoder_sw = D7; // GPIO13, SPI
 // D12 - SDD3, not usable, maybe digital read? // GPIO10
 
 // defaults and paramters
-double defaultSetpoint = 20.0;
-double setpointDifferential = 2.0;
-long setpointWaitTime = 3000;
-double minimumTemperature = 0.0;
-double maximumTemperature = 50.0;
+double defaultSetpoint = 20.0; // C
+double setpointDifferential = 0.75; // C
+long compressorDelayTime = 20 * 1000; // msec
+long setpointWaitTime = 3 * 1000; // msec
+double minimumTemperature = 0.0; // C
+double maximumTemperature = 50.0; // C
 
 // callback declarations
 
@@ -42,7 +43,7 @@ Wifi wifi(WIFI_SSID, WIFI_PASSWD, onIpAddress);
 Display display(defaultSetpoint); // pin_display_i2c_slc, pin_display_12c_sda
 Thermometer thermometer(pin_thermomemter_ds18B20_dq, setpointWaitTime, onTemperature);
 Setpoint setpoint(pin_encoder_clk, pin_encoder_dt, pin_encoder_sw, minimumTemperature, maximumTemperature, defaultSetpoint, setpointWaitTime, onSetpoint, onValue);
-Controller controller(pin_controller_relay_cool, pin_controller_relay_heat, setpointDifferential, defaultSetpoint, onCool, onHeat);
+Controller controller(pin_controller_relay_cool, pin_controller_relay_heat, setpointDifferential, compressorDelayTime, defaultSetpoint, onCool, onHeat);
 
 void setup() {
   Serial.begin(115200);
