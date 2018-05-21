@@ -17,6 +17,8 @@ class Controller {
     void (*onHeat)(bool isCalling);
     bool shouldCool(double temperature);
     bool shouldHeat(double temperature);
+    bool relayOn(uint8_t pin);
+    bool relayOff(uint8_t pin);
 
   public:
     Controller(uint8_t coolPin, uint8_t heatPin, double differential, double defaultSetpoint, void (*onCool)(bool isCalling), void (*onHeat)(bool isCalling));

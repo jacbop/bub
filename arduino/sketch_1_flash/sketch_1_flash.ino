@@ -1,11 +1,13 @@
 // A simple flashing LED test program to make sure we
-// can program the 8266 properly
+// can program the NodeMCU 1.0 (ESP-12E) properly
 
 void setup() {
-  pinMode(2, OUTPUT);
+//  pinMode(D4, OUTPUT);
+  pinMode(D8, OUTPUT);
 }
 
 void loop() {
-  digitalWrite(2, !digitalRead(2));
+//  digitalWrite(D4, !digitalRead(D4));
+  digitalWrite(D8, !digitalRead(D8));
   delay(1000);
 }

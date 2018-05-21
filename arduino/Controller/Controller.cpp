@@ -22,6 +22,40 @@ bool Controller::shouldHeat(double temperature) {
   return temperature < (setPoint - differential);
 }
 
+bool Controller::relayOn(uint8_t pin) {
+  if (pin == coolPin) {
+    if (!isCallingForCool) {
+      isCallingForCool = true;
+      digitalWrite(coolPin, HIGH);
+      onCool(true);
+    }
+  }
+  if (pin == heatPin) {
+    if (!isCallingForHeat) {
+      isCallingForHeat = true;
+      digitalWrite(heatPin, HIGH);
+      onHeat(true);
+    }
+  }
+}
+
+bool Controller::relayOff(uint8_t pin) {
+  if (pin == coolPin) {
+    if (isCallingForCool) {
+      isCallingForCool = false;
+      digitalWrite(coolPin, LOW);
+      onCool(false);
+    }
+  }
+  if (pin == heatPin) {
+    if (isCallingForHeat) {
+      isCallingForHeat = false;
+      digitalWrite(heatPin, LOW);
+      onHeat(false);
+    }
+  }
+}
+
 void Controller::setTemperature(double temperature) {
   Serial.println(temperature);
   Serial.println(" sp ");
@@ -29,32 +63,14 @@ void Controller::setTemperature(double temperature) {
   Serial.println(" diff ");
   Serial.println(differential);
   if (shouldCool(temperature)) {
-    if (!isCallingForCool) {
-      isCallingForCool = true;
-      onCool(true);
-    }
-    if (isCallingForHeat) {
-      isCallingForHeat = false;
-      onHeat(false);
-    }
+    relayOn(coolPin);
+    relayOff(heatPin);
   } else if (shouldHeat(temperature)) {
-    if (isCallingForCool) {
-      isCallingForCool = false;
-      onCool(false);
-    }
-    if (!isCallingForHeat) {
-      isCallingForHeat = true;
-      onHeat(true);
-    }
+    relayOff(coolPin);
+    relayOn(heatPin);
   } else {
-    if (isCallingForCool) {
-      isCallingForCool = false;
-      onCool(false);
-    }
-    if (isCallingForHeat) {
-      isCallingForHeat = false;
-      onHeat(false);
-    }
+    relayOff(coolPin);
+    relayOff(heatPin);
   }
 }
 

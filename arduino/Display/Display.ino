@@ -14,6 +14,7 @@ void loop()
     edge = 1;
     display.setValue(random(10,30));
     display.setTemperature(random(10,30));
+    display.setBanner("  Wilberding  ");
   }
   if (edge == 1 && millis() % 10000 > 9990) {
     display.setSetpoint(random(10,30));

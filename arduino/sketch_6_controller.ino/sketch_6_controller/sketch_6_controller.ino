@@ -1,44 +1,48 @@
 // Basic operation of rotary encoder controlling OLED with Wifi and thermometer and controller logic
 
-#include "Controller.h"
+#include "Wifi.h"
+#include "Display.h"
 #include "Thermometer.h"
 #include "Setpoint.h"
-#include "Display.h"
-#include "Wifi.h"
+#include "Controller.h"
 
+// pins
+uint8_t pin_controller_relay_heat = D0; // GPIO16, NodeMCU LED, flashes during boot
+uint8_t pin_display_i2c_slc = D1; // GPIO5
+uint8_t pin_display_12c_sda = D2; // GPIO4
+uint8_t pin_thermomemter_ds18B20_dq = D3; // GPIO0, must be in specific state during boot and flash
+uint8_t pin_controller_relay_cool = D4; // D4 - ESP12 LED, // GPIO2 must be in specific state during boot and flash
+uint8_t pin_encoder_clk = D5; // GPIO14, SPI
+uint8_t pin_encoder_dt = D6; // GPIO12, SPI
+uint8_t pin_encoder_sw = D7; // GPIO13, SPI
+// D8 - GPIO15, SPI, must be in specific state during boot and flash
+// D9 - RX, Needed for programming // GPIO3
+// D10 - TX, Needed for programming // GPIO1
+// D11 - SDD2, not usable // GPIO9
+// D12 - SDD3, not usable, maybe digital read? // GPIO10
+
+// defaults and paramters
 double defaultSetpoint = 20.0;
-double defaultSetpointDifferential = 2.0;
+double setpointDifferential = 2.0;
+long setpointWaitTime = 3000;
+double minimumTemperature = 0.0;
+double maximumTemperature = 50.0;
 
-Wifi wifi;
-Display display(defaultSetpoint); // D1, D2
+// callback declarations
 
-void onCool(bool isCalling) {
-  display.setCool(isCalling);
-}
+void onIpAddress(String ipAddress);
+void onCool(bool isCalling);
+void onHeat(bool isCalling);
+void onTemperature(double temperature);
+void onValue(double value);
+void onSetpoint(double setpoint);
 
-void onHeat(bool isCalling) {
-  display.setHeat(isCalling);
-}
-
-Controller controller(D4, D8, defaultSetpointDifferential, defaultSetpoint, onCool, onHeat);
-
-void onTemperature(double temperature) {
-  controller.setTemperature(temperature);
-  display.setTemperature(temperature);
-}
-
-Thermometer thermometer(D3, 5000, onTemperature);
-
-void onValue(double value) {
-  display.setValue(value);
-}
-
-void onSetpoint(double setpoint) {
-  controller.setSetpoint(setpoint);
-  display.setSetpoint(setpoint);
-}
-
-Setpoint setpoint(D5, D6, D7, 10.0, 80.0, defaultSetpoint, 3000, onSetpoint, onValue);
+// components
+Wifi wifi(WIFI_SSID, WIFI_PASSWD, onIpAddress);
+Display display(defaultSetpoint); // pin_display_i2c_slc, pin_display_12c_sda
+Thermometer thermometer(pin_thermomemter_ds18B20_dq, setpointWaitTime, onTemperature);
+Setpoint setpoint(pin_encoder_clk, pin_encoder_dt, pin_encoder_sw, minimumTemperature, maximumTemperature, defaultSetpoint, setpointWaitTime, onSetpoint, onValue);
+Controller controller(pin_controller_relay_cool, pin_controller_relay_heat, setpointDifferential, defaultSetpoint, onCool, onHeat);
 
 void setup() {
   Serial.begin(115200);
@@ -54,6 +58,33 @@ void loop() {
   long now = millis();
   setpoint.poll(now);
   thermometer.poll(now);
+}
+
+// callbacks
+void onIpAddress(String ipAddress) {
+  display.setBanner(ipAddress);  
+}
+
+void onCool(bool isCalling) {
+  display.setCool(isCalling);
+}
+
+void onHeat(bool isCalling) {
+  display.setHeat(isCalling);
+}
+
+void onTemperature(double temperature) {
+  controller.setTemperature(temperature);
+  display.setTemperature(temperature);
+}
+
+void onValue(double value) {
+  display.setValue(value);
+}
+
+void onSetpoint(double setpoint) {
+  controller.setSetpoint(setpoint);
+  display.setSetpoint(setpoint);
 }
 
 

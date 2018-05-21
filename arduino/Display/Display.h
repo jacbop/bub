@@ -25,7 +25,7 @@ class Display {
     void setTemperature(double value);
     void setCool(bool isCalling);
     void setHeat(bool isCalling);
-    void setFooter();
+    void setBanner(String banner);
 };
 
 #endif
