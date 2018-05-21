@@ -10,8 +10,9 @@ void onHeat(bool isCalling) {
   Serial.println(isCalling);
 }
 
-void onWaitingForCompressor() {
-  Serial.println("waiting for compressor: ");
+void onWaitingForCompressor(bool isWaiting) {
+  Serial.print("waiting for compressor: ");
+  Serial.println(isWaiting);
 }
 
 Controller controller(D0, D4, 2.0, 120000, 20.0, onCool, onHeat, onWaitingForCompressor);

@@ -1,6 +1,6 @@
 #include "Display.h"
 
-Display::Display(double defaultValue): lastValue(defaultValue), lastTemperature(defaultValue), lastCool(false), lastHeat(false), lastBanner("  Wilberding   ") {
+Display::Display(double defaultValue): lastValue(defaultValue), lastTemperature(defaultValue), lastCool(false), lastHeat(false), isWaitingForCompressor(false), lastBanner("  Wilberding   ") {
 }
 
 void Display::start(bool debug) {
@@ -26,7 +26,13 @@ void Display::refresh() {
   oled.putString(tempText);
   oled.putString("C");
 
-  String coolText = (lastCool) ? String(" (*)") : String("    ");
+  String coolText = String("    ");
+  if (isWaitingForCompressor) {
+    coolText = String(" ...");
+  }
+  if (lastCool) {
+    coolText = String(" (*)");
+  }
   oled.setTextXY(6, 0);
   oled.putString("Cool = ");
   oled.putString(coolText);
@@ -54,6 +60,11 @@ void Display::setTemperature(double value) {
 
 void Display::setCool(bool isCalling) {
   lastCool = isCalling;
+  refresh();
+}
+
+void Display::setWaitingForCompressor(bool isWaiting) {
+  isWaitingForCompressor = isWaiting;
   refresh();
 }
 

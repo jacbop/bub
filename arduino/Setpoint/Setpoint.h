@@ -2,6 +2,7 @@
 #define HEADER_SETPOINT
 
 #include "Arduino.h"
+#include "Timing.h"
 #include <Encoder.h>
 
 // https://github.com/PaulStoffregen/Encoder
@@ -10,6 +11,7 @@
 
 class Setpoint {
   private:
+    Timing timing;
     Encoder encoder;
     long minTicks;
     long maxTicks;

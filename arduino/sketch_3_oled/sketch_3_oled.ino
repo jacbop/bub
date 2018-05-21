@@ -3,7 +3,7 @@
 #include "Setpoint.h"
 #include "Display.h"
 
-Display display;
+Display display(22.0);
 
 void onSetpoint(double setpoint) {
   display.setSetpoint(setpoint);

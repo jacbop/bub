@@ -24,7 +24,7 @@ uint8_t pin_encoder_sw = D7; // GPIO13, SPI
 // defaults and paramters
 double defaultSetpoint = 20.0; // C
 double setpointDifferential = 0.75; // C
-long compressorDelayTime = 20 * 1000; // msec
+long compressorDelayTime = 2 * 60 * 1000; // msec
 long setpointWaitTime = 3 * 1000; // msec
 long temperatureSamplePeriod = 3 * 1000; // msec
 double minimumTemperature = 0.0; // C
@@ -35,6 +35,7 @@ double maximumTemperature = 50.0; // C
 void onIpAddress(String ipAddress);
 void onCool(bool isCalling);
 void onHeat(bool isCalling);
+void onWaitingForCompressor(bool isWaiting);
 void onTemperature(double temperature);
 void onValue(double value);
 void onSetpoint(double setpoint);
@@ -44,7 +45,7 @@ Wifi wifi(WIFI_SSID, WIFI_PASSWD, onIpAddress);
 Display display(defaultSetpoint); // pin_display_i2c_slc, pin_display_12c_sda
 Thermometer thermometer(pin_thermomemter_ds18B20_dq, temperatureSamplePeriod, onTemperature);
 Setpoint setpoint(pin_encoder_clk, pin_encoder_dt, pin_encoder_sw, minimumTemperature, maximumTemperature, defaultSetpoint, setpointWaitTime, onSetpoint, onValue);
-Controller controller(pin_controller_relay_cool, pin_controller_relay_heat, setpointDifferential, compressorDelayTime, defaultSetpoint, onCool, onHeat);
+Controller controller(pin_controller_relay_cool, pin_controller_relay_heat, setpointDifferential, compressorDelayTime, defaultSetpoint, onCool, onHeat, onWaitingForCompressor);
 
 void setup() {
   Serial.begin(115200);
@@ -73,6 +74,10 @@ void onCool(bool isCalling) {
 
 void onHeat(bool isCalling) {
   display.setHeat(isCalling);
+}
+
+void onWaitingForCompressor(bool isWaiting) {
+  display.setWaitingForCompressor(isWaiting);
 }
 
 void onTemperature(double temperature) {

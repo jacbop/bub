@@ -3,7 +3,7 @@
 
 Timing timing;
 
-Controller::Controller(uint8_t coolPin, uint8_t heatPin, double differential, long compressorDelayTime, double defaultSetpoint, void (*onCool)(bool isCalling), void (*onHeat)(bool isCalling), void (*onWaitingForCompressor)()):
+Controller::Controller(uint8_t coolPin, uint8_t heatPin, double differential, long compressorDelayTime, double defaultSetpoint, void (*onCool)(bool isCalling), void (*onHeat)(bool isCalling), void (*onWaitingForCompressor)(bool isWaiting)):
   coolPin(coolPin), heatPin(heatPin), isCallingForCool(false), isCallingForHeat(false), isWaitingForCompressor(false), differential(differential), compressorDelayTime(compressorDelayTime), lastCompressorOffTime(0), setPoint(defaultSetpoint), onCool(onCool), onHeat(onHeat), onWaitingForCompressor(onWaitingForCompressor) {
   pinMode(coolPin, OUTPUT);
   pinMode(heatPin, OUTPUT);
@@ -28,18 +28,20 @@ bool Controller::shouldHeat(double temperature) {
 
 bool Controller::relayOn(uint8_t pin) {
   if (pin == coolPin) {
-    if (!isWaitingForCompressor) {
+    if (!isWaitingForCompressor && !isCallingForCool) {
       Serial.println("waiting for compressor");
-      onWaitingForCompressor();
       isWaitingForCompressor = true;
-    }
-    if (timing.hasElapsed(lastCompressorOffTime, compressorDelayTime)) {
-      Serial.println("compressor is ready");
-      Serial.println("cool on");
-      isCallingForCool = true;
-      digitalWrite(coolPin, HIGH);
-      onCool(true);
-      isWaitingForCompressor = false;
+      onWaitingForCompressor(true);
+    } else {
+      if (!isCallingForCool && timing.hasElapsed(lastCompressorOffTime, compressorDelayTime)) {
+        Serial.println("compressor is ready");
+        Serial.println("cool on");
+        isCallingForCool = true;
+        digitalWrite(coolPin, HIGH);
+        onCool(true);
+        isWaitingForCompressor = false;
+        onWaitingForCompressor(false);
+      }
     }
   }
   if (pin == heatPin) {
@@ -60,6 +62,11 @@ bool Controller::relayOff(uint8_t pin) {
       digitalWrite(coolPin, LOW);
       onCool(false);
       lastCompressorOffTime = timing.getInstant();
+    } else {
+      if (!isCallingForCool && timing.hasElapsed(lastCompressorOffTime, compressorDelayTime)) {
+        isWaitingForCompressor = false;
+        onWaitingForCompressor(false);
+      }
     }
   }
   if (pin == heatPin) {

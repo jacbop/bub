@@ -13,6 +13,7 @@ class Display {
    double lastTemperature;
    bool lastCool;
    bool lastHeat;
+   bool isWaitingForCompressor;
    String lastBanner;
    void refresh();
   
@@ -23,6 +24,7 @@ class Display {
     void setSetpoint(double value);
     void setValue(double value);
     void setTemperature(double value);
+    void setWaitingForCompressor(bool isWaiting);
     void setCool(bool isCalling);
     void setHeat(bool isCalling);
     void setBanner(String banner);

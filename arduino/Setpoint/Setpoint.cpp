@@ -1,9 +1,6 @@
 #include "Setpoint.h"
-#include "Timing.h"
 
 #define TICK_RESOLUTION 4.0
-
-Timing timing;
 
 Setpoint* Setpoint::instance = NULL;
 bool Setpoint::debug = false;
@@ -29,6 +26,7 @@ Setpoint::Setpoint(
   buttonDebounceStartTime(0),
   needToCommit(false),
   commitDebounceStartTime(0),
+  timing(),
   onSetpoint(onSetpoint),
   onValue(onValue)
 {

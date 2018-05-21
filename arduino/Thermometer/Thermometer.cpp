@@ -1,10 +1,7 @@
 #include "Thermometer.h"
-#include "Timing.h"
-
-Timing timing;
 
 Thermometer::Thermometer(uint8_t pin, uint samplePeriod, void (*onTemperature)(double temperature)):
-  oneWire(pin), sensors(&oneWire), samplePeriod(samplePeriod), lastSample(0), onTemperature(onTemperature) {
+  oneWire(pin), sensors(&oneWire), samplePeriod(samplePeriod), lastSample(0), timing(), onTemperature(onTemperature) {
   pinMode(pin, INPUT_PULLUP);
 }
 

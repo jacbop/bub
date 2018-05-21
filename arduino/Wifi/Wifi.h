@@ -11,7 +11,7 @@ class Wifi {
     char* ssid;
     char* password;
     void (*onIpAddress)(String ipAddress);
-    
+
   public:
     //
     Wifi(char* ssid, char* password, void (*onIpAddress)(String ipAddress));

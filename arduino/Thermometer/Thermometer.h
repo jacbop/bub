@@ -4,12 +4,14 @@
 #include "Arduino.h"
 #include <OneWire.h>
 #include <DallasTemperature.h>
+#include "Timing.h"
 
 // https://github.com/adafruit/MAX31850_OneWire
 // https://github.com/adafruit/MAX31850_DallasTemp
 
 class Thermometer {
   private:
+    Timing timing;
     long lastSample;
     uint samplePeriod;
     OneWire oneWire;

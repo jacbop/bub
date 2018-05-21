@@ -4,8 +4,13 @@
 #include "Display.h"
 #include "Wifi.h"
 
-Wifi wifi;
-Display display;
+Display display(22.0);
+
+void onIpAddress(String ipAddress) {
+  display.setBanner(ipAddress);  
+}
+
+Wifi wifi(WIFI_SSID, WIFI_PASSWD, onIpAddress);
 
 void onSetpoint(double setpoint) {
   display.setSetpoint(setpoint);

@@ -5,8 +5,13 @@
 #include "Display.h"
 #include "Wifi.h"
 
-Wifi wifi;
-Display display; // D1, D2
+Display display(22.0); // D1, D2
+
+void onIpAddress(String ipAddress) {
+  display.setBanner(ipAddress);  
+}
+
+Wifi wifi(WIFI_SSID, WIFI_PASSWD, onIpAddress);
 
 void onTemperature(double temperature) {
   display.setTemperature(temperature);
